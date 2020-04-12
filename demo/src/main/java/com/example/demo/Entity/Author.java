@@ -1,17 +1,18 @@
-package com.example.demo;
+package com.example.demo.Entity;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
+@Table
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String Name;
+    private String name;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-    private List<Books> books;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Books books;
 
     public int getId() {
         return id;
@@ -22,25 +23,19 @@ public class Author {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
-    public List<Books> getBooks() {
-        return books;
-    }
 
-    public void setBooks(List<Books> books) {
-        this.books = books;
-    }
 
     @Override
     public String toString() {
         return "Author{" +
-                "Name='" + Name + '\'' +
+                "Name='" + name + '\'' +
                 '}';
     }
 }

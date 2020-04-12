@@ -1,9 +1,15 @@
-package com.example.demo;
+package com.example.demo.Entity;
+
+import com.example.demo.Entity.Books;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table
+@Transactional(readOnly=true,propagation = Propagation.NOT_SUPPORTED)
 public class user{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,8 +19,13 @@ public class user{
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    private List<Request> requests;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "Request",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "id")}
+    )
+    private Set<Books> books;
 
     public user(){}
     public user( String name, String surname, String password, String email){
@@ -51,13 +62,20 @@ public class user{
         this.password = password;
     }
 
-
-    public List<Request> getRequests() {
-        return requests;
+    public Set<Books> getBooks() {
+        return books;
     }
 
-    public void setRequests(List<Request> requests) {
-        this.requests = requests;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setBooks(Set<Books> books) {
+        this.books = books;
     }
 
     @Override
@@ -68,7 +86,7 @@ public class user{
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", requests=" + requests +
+                ", Books='" + books + '\'' +
                 '}';
     }
 }

@@ -1,12 +1,15 @@
-package com.example.demo;
+package com.example.demo.Entity;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table
+@Transactional
 public class Books {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +19,8 @@ public class Books {
     private Date date;
     private boolean available;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
-    private Author author;
+    @OneToMany(mappedBy = "books", fetch = FetchType.LAZY)
+    private List<Author> author;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "BookCategory",
@@ -27,8 +29,8 @@ public class Books {
     )
     private Set<Category> category;
 
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-    private List<Request> request;
+    @ManyToMany(mappedBy = "books")
+    private List<com.example.demo.Entity.user> user;
 
     public Long getId() {
         return id;
@@ -38,13 +40,15 @@ public class Books {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getName(String name) {
+        return this.name;
+    }
+
+
 
     public String getDescription() {
         return description;
@@ -70,29 +74,15 @@ public class Books {
         this.available = available;
     }
 
-    public Author getAuthor() {
+    public List<Author> getAuthor() {
         return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
     }
 
     public Set<Category> getCategory() {
         return category;
     }
 
-    public void setCategory(Set<Category> category) {
-        this.category = category;
-    }
 
-    public List<Request> getRequest() {
-        return request;
-    }
-
-    public void setRequest(List<Request> request) {
-        this.request = request;
-    }
 
     @Override
     public String toString() {
