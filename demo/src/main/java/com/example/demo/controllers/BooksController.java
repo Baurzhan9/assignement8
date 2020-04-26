@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.Entity.Books;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/books")
+@Api(value = "Book Controller class", description = "Book object")
 public class BooksController {
 
     @Autowired

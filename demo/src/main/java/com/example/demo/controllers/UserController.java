@@ -2,6 +2,8 @@ package com.example.demo.controllers;
 
 import com.example.demo.Entity.user;
 import com.example.demo.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Api(value = "User Controller class", description = "User object")
 public class UserController {
 
     @Autowired
@@ -22,6 +25,7 @@ public class UserController {
 
     @RequestMapping(value="", method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
+    @ApiOperation(value = "Method to get list of users", response = List.class)
     public List<user> getAllUsers(){
         return userRepository.findAll();
     }
