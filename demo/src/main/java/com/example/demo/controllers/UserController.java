@@ -1,8 +1,11 @@
 package com.example.demo.controllers;
 
 import com.example.demo.Entity.user;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private com.example.demo.Repository.userRepository userRepository;
@@ -31,16 +37,36 @@ public class UserController {
         return userRepository.findAllByNameContainingAndSurname(name, surname);
     }
 
+
+    @GetMapping("/create")
+    public void createUserByUsernamePassword(String username,
+                                             String password) {
+        user user = new user();
+        user.setPassword(password);
+        user.setUsername(username);
+
+        userService.createUser(user);
+    }
     @PostMapping("")
-    public  user createUser(@RequestBody user user){
-        return userRepository.saveAndFlush(user);
+    public void createUser(@RequestBody user user){
+
+        System.out.println("UserController.createUser");
+        System.out.println("user = " + user);
+
+        userService.createUser(user);
+//        return userRepository.saveAndFlush(user);
     }
 
     @PutMapping("/{id}")
-    public  user updateUser(@PathVariable Long id,
-                            @RequestBody user user) {
-        user.setId(id);
-        return userRepository.saveAndFlush(user);
+    public void updateUser(@PathVariable Long id,
+                           @RequestBody user user) {
+        System.out.println("UserController.updateUser");
+        System.out.println("id = " + id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("authentication.getName() = " + authentication.getName());
+
+        userService.updateUser(id, user);
     }
 
     @PatchMapping("/{id}")
@@ -50,6 +76,7 @@ public class UserController {
         user.setName(name);
         return userRepository.saveAndFlush(user);
     }
+
 
 
 }

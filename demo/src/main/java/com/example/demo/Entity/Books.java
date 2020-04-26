@@ -1,5 +1,6 @@
 package com.example.demo.Entity;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.Set;
 @Entity
 @Table
 @Transactional
-public class Books {
+public class Books implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -94,5 +95,10 @@ public class Books {
                 ", author=" + author +
                 ", category=" + category +
                 '}';
+    }
+
+    @Override
+    public String getAuthority() {
+        return name;
     }
 }

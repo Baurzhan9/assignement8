@@ -1,31 +1,37 @@
 package com.example.demo.Entity;
 
 import com.example.demo.Entity.Books;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table
 @Transactional(readOnly=true,propagation = Propagation.NOT_SUPPORTED)
-public class user{
+public class user implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String surname;
     private String email;
-    private String password;
 
+    @Column(unique = true)
+    private String username;
+    private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Request",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "id")}
     )
-    private Set<Books> books;
+    private List<Books> books;
 
     public user(){}
     public user( String name, String surname, String password, String email){
@@ -54,15 +60,49 @@ public class user{
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return  books;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Set<Books> getBooks() {
+    public List<Books> getBooks() {
         return books;
     }
 
@@ -74,7 +114,7 @@ public class user{
         this.id = id;
     }
 
-    public void setBooks(Set<Books> books) {
+    public void setBooks(List<Books> books) {
         this.books = books;
     }
 
